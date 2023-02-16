@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  //1、去掉arr里面重复的数据、可多种方法
+  var arr = [1, 2, 3, 4, 5, 1, 2, 3];
+  //方法1  利用set去重
+  console.log([...new Set(arr)]);
+  //方法2  indexof去重
+  let newArr =[]
+  arr.forEach(item=>{
+    if (newArr.indexOf(item)==-1) {
+        newArr.push(item)
+    }
+  })
+  console.log(newArr);
+  //方法3  reduce去重
+  let newarr = arr.reduce((pre,target)=>{
+     if(!pre.includes(target)){
+        return pre.concat(target)
+     }else{
+        return pre
+     }
+  },[])
+  console.log(newarr);
+  //
+  //2、递归查询数据、传参数指定的id、移除数组list里面指定id的对象
+  var list = [
+    {
+      id: "4b8f5223-27fe-d734-7ac0-2511bc54c79e",
+      name: "沿江项目部",
+      pid: "00000000-0000-0000-0000-000000000000",
+      children: [
+        {
+          id: "c0b77783-deb7-5713-fb9b-1886c34f1168",
+          modelType: "",
+          name: "左线",
+          pid: "4b8f5223-27fe-d734-7ac0-2511bc54c79e",
+          children: [{
+            id: "eedc5e7c-fc44-b277-6f16-3a22c4bc80b3",
+            name: "左1",
+            pid: "c0b77783-deb7-5713-fb9b-1886c34f1168"
+          }],
+        },
+        {
+          codeSchemeName: "BIM模型编码未关联",
+          id: "33dffcf0-3701-929c-38a6-837887b13f0c",
+          modelCode: "CS20220309",
+          modelName: "1646834186000_BIM模型V2_20220309215600026.pak",
+          modelType: "BIM",
+          name: "右线",
+          pid: "4b8f5223-27fe-d734-7ac0-2511bc54c79e",
+        }
+      ]
+    },
+    {
+      codeSchemeName: "dem",
+      id: "4674a8c6-5ab4-529d-089b-ff56edfb82e9",
+      modelCode: "CS20220309",
+      modelName: "1646834213000_ce_20220309215600053.zip",
+      modelType: "DEM",
+      name: "地形",
+      pid: "00000000-0000-0000-0000-000000000000"
+    }
+  ]
+
+  //首先遍历递归这个数组，判断它是否有子结点即children，如果有再进入递归，通过传递的id来删除当前这个数组中的对象
+  function getId(list,id){
+    list.forEach(item=>{
+      if(item.children && item.children.length > 0){
+           getId(item.children,id)
+      }else if(item.id == id){
+        list.splice(list.indexOf(item),1)
+      }
+     })
+  }
+  getId(list,"33dffcf0-3701-929c-38a6-837887b13f0c")
+  console.log(list);
+  //3、树形数据根据ID、PID、将下方tableList形成树形结构
+  var tableList = [{ id: '1', pid: '0000000000000000000', name: '甲' }, { id: '1.1', pid: '1', name: '甲1.1' }, { id: '1.2', pid: '1', name: '甲1.2' }, { id: '1.3', pid: '1', name: '甲1.3' },
+  { id: '1.2.1', pid: '1.2', name: '甲1.2.1' }, { id: '1.2.2', pid: '1.2', name: '甲1.2.2' }, { id: '2', pid: '0000000000000000000', name: '甲2' }, { id: '2.1', pid: '2', name: '甲2.1' },
+  { id: '2.2', pid: '2', name: '甲2.2' }, { id: '2.1.1', pid: '2.1', name: '甲2.2' }, { id: '2.1.2', pid: '2.1', name: '甲2.1.2' }, { id: '3', pid: '0000000000000000000', name: '甲2.1.2' },]
+  //方法一
+  // function toTree(tableList){
+  //   let obj = {},
+  //   res = [],
+  //   len = tableList.length
+
+  //   for(let i = 0;i<len;i++){
+  //     obj[tableList[i]['id']] =tableList[i]
+  //   }
+
+  //   for(let j = 0;j<len;j++){
+  //     let newlist = tableList[j]
+  //     let parentList = obj[newlist['pid']]
+  //     if(parentList){
+  //       if(!parentList['children']){
+  //         parentList['children'] = []
+  //       }
+  //       parentList['children'].push(newlist)
+  //     }
+  //     else{
+  //       res.push(newlist)
+  //     }
+  //   }
+  //   return res
+  // } 
+
+  
+  //方法2
+  // function toTree(data){
+  //   let TreeData = [];
+  //       let map = new Map(); //存在id,对应所在的内存地址
+  //       let outputObj, pid;
+  //       for (let i = 0; i < data.length; i++) {
+  //           pid = data[i].pid;
+  //           if (map.has(pid)) {
+  //               //存在，将些信息，加入到对应id=pid的对象上的children
+  //               if (!map.get(pid).childrens)
+  //                   map.get(pid).childrens = [];
+  //               let obj = new Object(data[i]);
+  //               map.get(pid).childrens.push(obj);
+  //               //通过pid在Map中查找，并将当前对象，加入到对应的childres属性
+  //               map.set(data[i].id, obj);
+  //               //重点(必须也加入Map)：将当前id及对应的对象，存入Map对象中
+  //           } else if (!map.has(pid) && pid == 0) {
+  //               //这里处理pid不存在，且pid 为0的处理，pid不存在，且不为0的，程序不考虑这种情况
+  //               outputObj = new Object(data[i]);
+  //                //加入到要返回的数组中
+                 
+  //               TreeData.push(outputObj);
+  //               //将id添加到Map中
+  //               map.set(data[i].id, outputObj);
+             
+  //           }
+  //       }
+  //       console.log('TreeData'+JSON.stringify(TreeData));
+  //       return TreeData;
+  // }
+  
+
+
+  // toTree(tableList)
+  // console.log(toTree(tableList));
+
+
+  //4.数组扁平化
+  //方法1 纯数字  tostring+split+map
+  let arr1 = [1,[2,[3,[4]]]]
+  bian(arr1)
+  function bian(arr){
+    arr.toString().split(',').map(item=>{
+      return item
+    })
+    console.log(arr);
+  }
+  //方法2 纯数字  reduce
+  let arr2 = [1,[2,[3,[4]]]]
+  function float(arr2){
+    arr2.reduce((pre,target)=>{
+    if(Array.isArray(target)){
+     return pre.concat(float(target))
+    }else{
+     return pre.concat(target)
+    }
+  },[])
+    console.log(arr2);
+  }
+  float(arr2)
+  
+</script>
+
+</html>

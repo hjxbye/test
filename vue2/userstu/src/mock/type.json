@@ -1,0 +1,20 @@
+{
+    "typeList":[
+        {
+            "label": "word文件",
+            "value": "0",
+            "size": "5MB"
+        },
+        {
+            "label": "excel文件",
+            "value": "1",
+            "size": "5MB"
+        },
+        {
+            "label": "powerpoint文件",
+            "value": "2",
+            "size": "5MB"
+        }
+        
+    ]
+}
